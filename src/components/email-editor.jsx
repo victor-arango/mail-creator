@@ -1,7 +1,5 @@
 import React, { useRef } from 'react';
-import { render } from 'react-dom'
-import template from '/public/template.json'; // Adjust the path as needed
-
+import template from '/public/template.json'; 
 import EmailEditor from 'react-email-editor';
 
 const App = (props) => {
@@ -49,8 +47,6 @@ const App = (props) => {
         onLoad={onLoad}
         onReady={onReady}
         minHeight="100%"
-
-        
         options={{
           customCSS: [
             `
