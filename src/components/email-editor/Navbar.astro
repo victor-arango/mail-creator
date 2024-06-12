@@ -1,0 +1,63 @@
+---
+
+import ExportInIcon from "../../../public/icons/export.svg";
+import DarkIcon from "../../../public/icons/dark.svg";
+import ImportIcon from "../../../public/icons/import.svg";
+import SavetIcon from "../../../public/icons/save.svg";
+import HomeIcon from "../../../public/icons/home.svg";
+
+const pages = [
+  { id: "home", label: "Home", text:"Inicio", iconButton:HomeIcon.src, name:""  },
+  { id: "export-button", label: "Export HTML", text: "ExporHTML", iconButton:ExportInIcon.src, name:""},
+  { id: "darkModeButton", label:"Dark Mode", text:"DarkMode", iconButton:DarkIcon.src, name:"textDarkMode"},
+  { id: "save-button", label: "Save Json", text:"Save JSON", iconButton:SavetIcon.src, name: "" }
+];
+---
+
+<div
+  class="fixed left-0 right-0 z-50 flex h-12 w-full flex-wrap justify-center 2xl:h-14 animation freeze bg-transparent"
+>
+  <div
+    class="relative mx-auto flex h-12 shrink flex-wrap items-center justify-center rounded-2xl border-1/2 border-slate-200 px-5 py-1 text-sm text-slate-800 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 2xl:h-14"
+  >
+    <div class="relative">
+      <div class="outline-none! relative flex cursor-pointer items-center">
+      
+          {
+            pages.map(({ id, label, text, iconButton, name}, key) => (
+              <>
+                <div class="outline-none! relative flex cursor-pointer items-center">
+                  <>
+                    <div class="outline-none! relative flex w-8 cursor-pointer items-center sm:w-10">
+                      <button
+                        popovertarget="ImportJson"
+                        type="button"
+                        aria-label={label}
+                        id={id}
+                        class="outline-none absolute z-50 rounded-full p-2 hover:bg-slate-100 focus:outline-none dark:hover:bg-slate-800"
+                      >
+                   <img src={iconButton} alt={label} />
+
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        id={name}
+                        class="outline-none outline-none! text-sm text-slate-800 hover:underline dark:text-slate-200">
+                        {text}
+                      </button>
+                    </div>
+                  </>
+                </div>
+                <div
+      data-orientation="vertical"
+      aria-orientation="vertical"
+      role="separator"
+      class="my-auto w-px bg-slate-200 dark:bg-slate-700 mx-2 h-5">
+    </div>
+              </>
+            ))
+          }
+      
+</div>

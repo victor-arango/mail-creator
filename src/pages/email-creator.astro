@@ -1,30 +1,131 @@
 ---
+import Navbar from "../components/email-editor/Navbar.astro";
 
-import App from '../components/email-editor';
 interface Props {
-  title: string
+	title: string;
 }
 
-const { title } = Astro.props
+const { title } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="description" content="Email creator app" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title}</title>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<script is:inline src="//editor.unlayer.com/embed.js"></script>
+	</head>
+	<style>
+		::-webkit-scrollbar {
+			width: 0.6rem;
+			border-radius: 0.5rem;
+		}
 
-  </head>
-  <body>
-	<App client:only="solid"></App>
-  </body>
+		::-webkit-scrollbar-thumb {
+			border: 0.5rem;
+		}
+	</style>
+	
+	<body class="relative">
+    <main title="Email creator">
+      <div id="editor-container">
+        
+      </div>
+      </main>
+    <slot />
+		<Navbar />
+	</body>
+	<script type="module" is:inline>
+import template from "/template.json" with { type: "json" };
+
+		
+
+
+
+		let theme = "modern_dark";
+
+		const editor = unlayer.createEditor({
+			id: "editor-container",
+			displayMode: "email",
+			minHeight: "100%",
+			appearance: {
+				theme: theme,
+				panels: {
+					tools: {
+						dock: "left",
+					},
+				},
+			},
+			
+			
+		});
+		
+		//Cambia el color del tema
+		const buttonDarkMode = document.getElementById("darkModeButton");
+		const nameButtonDarkMode = document.getElementById("textDarkMode");
+		buttonDarkMode.addEventListener("click", async () => {
+			theme = theme === "modern_dark" ? "modern_light" : "modern_dark";
+			editor.setAppearance({
+				theme: theme,
+			});
+			nameButtonDarkMode.textContent =
+				theme === "modern_dark" ? "Light Mode" : "Dark Mode";
+		});
+
+		// carga el diseño
+		editor.loadDesign(template);
+
+		//Exporta el HTML
+		const exportButton = document.getElementById("export-button");
+		exportButton.addEventListener("click", async () => {
+			await editor.exportHtml(function (data) {
+				const { design, html } = data;
+				const today = new Date().toISOString().slice(0, 10);
+				const filename = `plantilla-${today}.html`;
+				const element = document.createElement("a");
+				const file = new Blob([html], { type: "text/html" }); 
+				element.href = URL.createObjectURL(file);
+				element.download = filename;
+				element.click();
+			});
+		});
+
+		const saveJson = document.getElementById("save-button");
+		saveJson.addEventListener("click", async () => {
+			await editor.saveDesign(function (data) {
+				const { design } = data;
+				const today = new Date().toISOString().slice(0, 10);
+				const filename = `plantilla-${today}.json`;
+				const element = document.createElement("a");
+				const file = new Blob([JSON.stringify(data)],{type: "json/plain",});
+				element.href = URL.createObjectURL(file);
+				element.download = filename;
+				element.click();
+			});
+		});
+
+
+    const redirect = document.getElementById("home");
+
+    redirect.addEventListener("click", async() =>{
+      window.location = "/";
+    });
+
+
+
+	</script>
 </html>
 
+<style>
 
-
-
-
+	#editor-container{
+		width: 100%;
+		height: 95vh;
+		overflow: hidden;
+	}
+</style>
 
