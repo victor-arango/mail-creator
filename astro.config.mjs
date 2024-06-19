@@ -8,5 +8,8 @@ import netlify from "@astrojs/netlify";
 export default defineConfig({
   integrations: [react(), tailwind()],
   output: "server",
+  vite: {
+    assetsInclude: ['**/*.riv']
+  },
   adapter: netlify()
 });
