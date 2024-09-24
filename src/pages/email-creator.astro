@@ -108,6 +108,13 @@ import template from "/template.json" with { type: "json" };
 			});
 		});
 
+		const importHtml = document.getElementById("import-html");
+		importHtml.addEventListener("click", async() =>{
+			// await editor.
+			console.log(editor.loadTemplate);
+		})
+		
+
 
     const redirect = document.getElementById("home");
 
