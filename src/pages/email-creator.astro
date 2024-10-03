@@ -1,5 +1,6 @@
 ---
 import Navbar from "../components/email-editor/Navbar.astro";
+import Layout from "../layout/Layout.astro";
 
 interface Props {
 	title: string;
@@ -28,19 +29,54 @@ const { title } = Astro.props;
 		::-webkit-scrollbar-thumb {
 			border: 0.5rem;
 		}
+		main{
+			position: relative;
+		}
 	</style>
-	
-	<body class="relative">
-    <main title="Email creator">
-      <div id="editor-container">
-        
-      </div>
-      </main>
-    <slot />
+	<Layout title="Email creator" >
 		<Navbar />
-	</body>
+		<body  >
+			<main class="relative">
+				<div id="editor-container">
+					
+				</div>
+				<div id="popup-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+					<div class="relative p-4 w-full max-w-md max-h-full">
+						<div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+							<button type="button" class="absolute top-3 right-3 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+								<svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+								</svg>
+								<span class="sr-only">Cerrar modal</span>
+							</button>
+							<div class="p-4 md:p-5 text-center">
+								<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Importar JSON</h3>
+								<div class="flex items-center justify-center w-full">
+									<label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 mb-5">
+										<div class="flex flex-col items-center justify-center pt-5 pb-6">
+											<svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+												<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+											</svg>
+											<p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Haz clic para subir</span> o arrastra y suelta</p>
+											<p class="text-xs text-gray-500 dark:text-gray-400">JSON</p>
+										</div>
+										<input id="dropzone-file" type="file" class="hidden" />
+									</label>
+								</div>
+								<button id="load-template" type="button" class="text-white bg-blue-800 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+									Cargar archivo
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</main>
+			<slot />
+		</body>
+	</Layout>
 	<script type="module" is:inline>
-import template from "/template.json" with { type: "json" };
+	import template from "/template.json" with { type: "json" };
 
 		
 
@@ -64,66 +100,102 @@ import template from "/template.json" with { type: "json" };
 			
 		});
 		
-		//Cambia el color del tema
-		const buttonDarkMode = document.getElementById("darkModeButton");
-		const nameButtonDarkMode = document.getElementById("textDarkMode");
-		buttonDarkMode.addEventListener("click", async () => {
-			theme = theme === "modern_dark" ? "modern_light" : "modern_dark";
-			editor.setAppearance({
-				theme: theme,
-			});
-			nameButtonDarkMode.textContent =
-				theme === "modern_dark" ? "Light Mode" : "Dark Mode";
-		});
+		// //Cambia el color del tema
+		// const buttonDarkMode = document.getElementById("darkModeButton");
+		// const nameButtonDarkMode = document.getElementById("darkModeButton");
+		// buttonDarkMode.addEventListener("click", async () => {
+		// 	theme = theme === "modern_dark" ? "modern_light" : "modern_dark";
+		// 	editor.setAppearance({
+		// 		theme: theme,
+		// 	});
+		// 	nameButtonDarkMode.textContent =
+		// 		theme === "modern_dark" ? "Light Mode" : "Dark Mode";
+		// });
 
 		// carga el diseño
 		editor.loadDesign(template);
 
-		//Exporta el HTML
-		const exportButton = document.getElementById("export-button");
-		exportButton.addEventListener("click", async () => {
-			await editor.exportHtml(function (data) {
-				const { design, html } = data;
-				const today = new Date().toISOString().slice(0, 10);
-				const filename = `plantilla-${today}.html`;
-				const element = document.createElement("a");
-				const file = new Blob([html], { type: "text/html" }); 
-				element.href = URL.createObjectURL(file);
-				element.download = filename;
-				element.click();
-			});
-		});
+//Exporta el HTML
+const exportButton = document.getElementById("export-button");
+exportButton.addEventListener("click", async () => {
+	await editor.exportHtml(function (data) {
+		const { design, html } = data;
+		const today = new Date().toISOString().slice(0, 10);
+		const filename = `plantilla-${today}.html`;
+		const element = document.createElement("a");
+		const file = new Blob([html], { type: "text/html" }); 
+		element.href = URL.createObjectURL(file);
+		element.download = filename;
+		element.click();
+	});
+});
 
-		const saveJson = document.getElementById("save-button");
-		saveJson.addEventListener("click", async () => {
-			await editor.saveDesign(function (data) {
-				const { design } = data;
-				const today = new Date().toISOString().slice(0, 10);
-				const filename = `plantilla-${today}.json`;
-				const element = document.createElement("a");
-				const file = new Blob([JSON.stringify(data)],{type: "json/plain",});
-				element.href = URL.createObjectURL(file);
-				element.download = filename;
-				element.click();
-			});
-		});
+//Export HTML Minify 
+const exportMinifyButton = document.getElementById("export-button-minify");
 
-		const importHtml = document.getElementById("import-html");
-		importHtml.addEventListener("click", async() =>{
-			// await editor.
-			console.log(editor.loadTemplate);
-		})
-		
-
-
-    const redirect = document.getElementById("home");
-
-    redirect.addEventListener("click", async() =>{
-      window.location = "/";
+exportMinifyButton.addEventListener("click", async () => {
+    await editor.exportHtml(function (data) {
+        const { design, html } = data;
+		const htmlMinfy = html.replace(/\n/g, '').replace(/\s+/g, ' ');
+		console.log(htmlMinfy);
+        const today = new Date().toISOString().slice(0, 10);
+        const filename = `plantilla-${today}-Minify.html`;
+        const element = document.createElement("a");
+        const file = new Blob([htmlMinfy], { type: "text/html" });
+        element.href = URL.createObjectURL(file);
+        element.download = filename;
+        element.click();
     });
+});
+
+// Save JSON 
+const saveJson = document.getElementById("save-button");
+saveJson.addEventListener("click", async () => {
+	await editor.saveDesign(function (data) {
+		const { design } = data;
+		const today = new Date().toISOString().slice(0, 10);
+		const filename = `plantilla-${today}.json`;
+		const element = document.createElement("a");
+		const file = new Blob([JSON.stringify(data)],{type: "json/plain",});
+		element.href = URL.createObjectURL(file);
+		element.download = filename;
+		element.click();
+	});
+});
+
+// const importJson = document.getElementById("import-button");
+// importJson.addEventListener("click", async () => {
+//     // Obtener el modal
+//     const modal = document.getElementById("popup-modal");
+
+//     // Eliminar la clase 'hidden' para mostrar el modal
+//     modal.classList.remove("hidden");
+// });
+
+// // Cerrar el modal cuando se haga clic en los botones de cerrar
+// document.querySelectorAll('[data-modal-hide="popup-modal"]').forEach(button => {
+//     button.addEventListener("click", () => {
+//         const modal = document.getElementById("popup-modal");
+//         modal.classList.add("hidden");
+//     });
+// });
+
+// Cerrar el modal al hacer clic en el overlay
+const overlay = document.getElementById("modal-overlay");
+overlay.addEventListener("click", () => {
+    const modal = document.getElementById("popup-modal");
+    modal.classList.add("hidden");
+});
 
 
 
+
+
+const redirect = document.getElementById("home");
+
+redirect.addEventListener("click", async() =>{
+window.location = "/";
+});
 	</script>
 </html>
 
@@ -131,7 +203,7 @@ import template from "/template.json" with { type: "json" };
 
 	#editor-container{
 		width: 100%;
-		height: 95vh;
+		height: 92vh;
 		overflow: hidden;
 	}
 </style>

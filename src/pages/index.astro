@@ -1,9 +1,32 @@
 ---
 import Layout from "../layout/Layout.astro"
+import Header from '../components/Header.astro'
+import Loader from '../components/Loader.astro'
+
 ---
+<style>
+	.preloader {
+		   width: 100%;
+		   height: 100%;
+		   position: fixed;
+		   display: flex;
+		   justify-content: center;
+		   align-items: center;
+		   z-index: 2222;
+		   top: 0;
+		   bottom: 0;
+		   background-color: #FAF2E3 !important;
+	   }
+ </style>
 
-
+<div class="preloader">
+	<Loader>   
+	</div>
 <Layout title="Tools" >
+	
+	<Header></Header>
+	
+
 	<section class="container p-6 mx-auto space-y-3 dark:text-white">
 
 		<h4 class="text-xl font-bold text-gray-700 capitalize  md:text-3xl text-center">⚒️ Cadena tools 🛠️</h4>
@@ -29,7 +52,7 @@ import Layout from "../layout/Layout.astro"
 	
 	
 				<div class="w-full max-w-xs text-center shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px]">
-					<a href="/Json-parser">
+					<a href="/Email">
 						<div
 							class="object-cover object-center w-full h-48 mx-auto rounded-xl">
 							<div class="py-16 px-4">
@@ -64,5 +87,14 @@ import Layout from "../layout/Layout.astro"
 	</a>
 	
 </Layout>
-
+<script is:inline>
+		
+	window.onload = function(){
+		  setTimeout(function() {
+			document.querySelector(".preloader").style.display = "none";
+		  }, 
+		  2000
+		  ); 
+		}
+	  </script>
 
