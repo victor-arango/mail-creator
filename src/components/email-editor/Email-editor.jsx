@@ -1,0 +1,117 @@
+import React, { useRef } from 'react';
+import template from '/public/template.json';
+import EmailEditor from 'react-email-editor';
+
+const App = (props) => {
+  const emailEditorRef = useRef(null);
+
+  const exportButton = document.getElementById("export-button");
+  exportButton.addEventListener("click", async () => {
+      await emailEditorRef.current.editor.exportHtml(function (data) {
+          const { design, html } = data;
+          const today = new Date().toISOString().slice(0, 10);
+          const filename = `plantilla-${today}.html`;
+          const element = document.createElement("a");
+          const file = new Blob([html], { type: "text/html" }); 
+          element.href = URL.createObjectURL(file);
+          element.download = filename;
+          element.click();
+      });
+  });
+
+
+  //Export HTML Minify 
+const exportMinifyButton = document.getElementById("export-button-minify");
+
+exportMinifyButton.addEventListener("click", async () => {
+    await emailEditorRef.current.editor.exportHtml(function (data) {
+        const { design, html } = data;
+		const htmlMinfy = html.replace(/\n/g, '').replace(/\s+/g, ' ');
+		console.log(htmlMinfy);
+        const today = new Date().toISOString().slice(0, 10);
+        const filename = `plantilla-${today}-Minify.html`;
+        const element = document.createElement("a");
+        const file = new Blob([htmlMinfy], { type: "text/html" });
+        element.href = URL.createObjectURL(file);
+        element.download = filename;
+        element.click();
+    });
+});
+
+// Save JSON 
+const saveJson = document.getElementById("save-button");
+saveJson.addEventListener("click", async () => {
+	await  emailEditorRef.current.editor.saveDesign(function (data) {
+		const { design } = data;
+		const today = new Date().toISOString().slice(0, 10);
+		const filename = `plantilla-${today}.json`;
+		const element = document.createElement("a");
+		const file = new Blob([JSON.stringify(data)],{type: "json/plain",});
+		element.href = URL.createObjectURL(file);
+		element.download = filename;
+		element.click();
+	});
+});
+
+
+
+// Cerrar el modal cuando se haga clic en los botones de cerrar
+document.querySelectorAll('[data-modal-hide="popup-modal"]').forEach(button => {
+    button.addEventListener("click", () => {
+        const modal = document.getElementById("popup-modal");
+        modal.classList.add("hidden");
+    });
+});
+
+  //Rerdireccion 
+  const redirect = document.getElementById("home");
+
+redirect.addEventListener("click", async() =>{
+window.location = "/";
+});
+
+    //IMPORTAR json 
+    const importJson = document.getElementById("import-button");
+importJson.addEventListener("click", async () => {
+  loadDesign();
+});
+
+
+
+const loadDesign = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+    fileInput.onchange = (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const design = JSON.parse(event.target.result);
+        emailEditorRef.current.editor.loadDesign(design);
+      };
+      reader.readAsText(file);
+    };
+    fileInput.click();
+  };
+  
+  return (
+    <div className='w-full h-screen' >
+      
+      <EmailEditor
+      display='email'
+        editorId='editor-container'
+        ref={emailEditorRef}
+        minHeight="92%"
+        options={{
+          
+            appearance: {
+              theme: "modern_dark"
+            }
+          }}
+      />
+      
+    </div>
+  );
+};
+
+export default App;
