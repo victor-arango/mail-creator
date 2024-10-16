@@ -63,7 +63,7 @@ document.querySelectorAll('[data-modal-hide="popup-modal"]').forEach(button => {
     });
 });
 
-  //Rerdireccion 
+  //Redireccion 
   const redirect = document.getElementById("home");
 
 redirect.addEventListener("click", async() =>{
