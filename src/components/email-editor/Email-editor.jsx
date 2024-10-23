@@ -22,21 +22,24 @@ const App = (props) => {
 
   //Export HTML Minify 
 const exportMinifyButton = document.getElementById("export-button-minify");
-
 exportMinifyButton.addEventListener("click", async () => {
-    await emailEditorRef.current.editor.exportHtml(function (data) {
-        const { design, html } = data;
-		const htmlMinfy = html.replace(/\n/g, '').replace(/\s+/g, ' ');
-		console.log(htmlMinfy);
-        const today = new Date().toISOString().slice(0, 10);
-        const filename = `plantilla-${today}-Minify.html`;
-        const element = document.createElement("a");
-        const file = new Blob([htmlMinfy], { type: "text/html" });
-        element.href = URL.createObjectURL(file);
-        element.download = filename;
-        element.click();
-    });
+  await emailEditorRef.current.editor.exportHtml(function (data) {
+      const { design, html } = data;
+      const htmlMinify = html
+          .replace(/\n/g, '')             
+          .replace(/\s\s+/g, ' ')          
+          .trim();                        
+      const today = new Date().toISOString().slice(0, 10);
+      const filename = `plantilla-${today}-Minify.html`;
+      const element = document.createElement("a");
+      const file = new Blob([htmlMinify], { type: "text/html" });
+      element.href = URL.createObjectURL(file);
+      element.download = filename;
+      element.click();
+  });
 });
+
+
 
 // Save JSON 
 const saveJson = document.getElementById("save-button");
