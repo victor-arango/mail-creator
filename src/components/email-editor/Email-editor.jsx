@@ -20,15 +20,19 @@ const App = (props) => {
   });
 
 
+  
   //Export HTML Minify 
 const exportMinifyButton = document.getElementById("export-button-minify");
 exportMinifyButton.addEventListener("click", async () => {
   await emailEditorRef.current.editor.exportHtml(function (data) {
+    //Limpia los datos y exporta el html en una sola linea 
+
       const { design, html } = data;
       const htmlMinify = html
           .replace(/\n/g, '')             
           .replace(/\s\s+/g, ' ')          
-          .trim();                        
+          .trim();       
+
       const today = new Date().toISOString().slice(0, 10);
       const filename = `plantilla-${today}-Minify.html`;
       const element = document.createElement("a");
